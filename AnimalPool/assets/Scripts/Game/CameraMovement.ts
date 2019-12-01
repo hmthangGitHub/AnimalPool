@@ -82,7 +82,7 @@ export default class CameraMovement extends cc.Component {
         moveTo.target(this.node);
         moveTo.to(this.duration, { position: this.node.position.add(offset)}, {progress : null , easing : 'quadOut'});//,"  {(progress: Function); easing: Function|string; })
         moveTo.call(()=>{
-            console.log("Done!");
+            // console.log("Done!");
             switch (this.currentCameraPosition) {
                 case CameraPosition.UP:
                     this.cameraButton[CameraPosition.RIGHT].node.active = true;

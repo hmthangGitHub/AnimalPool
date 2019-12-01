@@ -2,6 +2,8 @@ import GroundPhysicsOverLay from "./GroundPhysicsOverLay";
 import GroundPhysicsUnit from "./GroundPhysicsUnit";
 import AstarPathFinding from "./AstarPathFinding";
 import Logger from "../Common/Logger";
+import Global from "./Global";
+import StateMachine from "./StateMachine";
 
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -24,14 +26,37 @@ export default class CharacterController extends cc.Component {
    targetInGrid : cc.Vec2 = new cc.Vec2();
 
    pathFinder : AstarPathFinding;
-   start()
-   {
-        this.pathFinder = cc.find("Canvas/Map/GroundPhysics").getComponent(AstarPathFinding);
-        let path = this.pathFinder.findPathInGrid(new cc.Vec2(0, 0), new cc.Vec2(1, 1));
-        Logger.log("CharacterController", path);
-   }
-
-
-
+   currentPath : cc.Vec2[] = [];
+   //@property(StateMachine)
    
+// currentState : State = State.IDLE;
+//    start()
+//    {
+//         // this.pathFinder = cc.find("Canvas/Map/GroundPhysics").getComponent(AstarPathFinding);
+//    }
+
+//    update(dt)
+//    {
+//     //    if(this.currentState == State.IDLE)
+//     //    {
+//     //         this.currentState = State.MOVING;
+//     //         this.scheduleOnce(()=>{
+//     //             this.currentPath = this.pathFinder.findPathInGrid(new cc.Vec2(25, 14), new cc.Vec2(29, 14));
+//     //         }, 0.5);
+//     //    }
+//     //    else if(this.currentState == State.MOVING)
+//     //    {
+            
+//     //         if(Global.enablePathDebug)
+//     //         {
+//     //             cc.find("Canvas/Map/GroundPhysics").getComponent(GroundPhysicsOverLay).debugPath(this.currentPath);
+//     //         }
+//     //    }
+//    }   
 }
+// export enum State {
+//     IDLE,
+//     MOVING,
+//     SWIMMING,
+//     RIGHT
+// }

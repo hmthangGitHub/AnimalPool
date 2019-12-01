@@ -27,8 +27,9 @@ export default class GroundPhysicsOverLay extends cc.Component {
 
     public offset : cc.Vec2 = new cc.Vec2();
     public mapSizeInTiles : cc.Vec2 = new cc.Vec2();
-
     public mapAsSimpleGrid : boolean[][] = [];
+    public mapAsTilesUnit : cc.Node[][] = [];
+
     onLoad()
     {
         this.mapSizeInTiles = new cc.Vec2(Math.ceil(this.backgroundResolution.x / this.tileSize.x),Math.ceil(this.backgroundResolution.y / this.tileSize.y));
@@ -53,10 +54,12 @@ export default class GroundPhysicsOverLay extends cc.Component {
     {
         for(let row = 0; row < this.mapSizeInTiles.y; row++)
         {
+            this.mapAsTilesUnit[row] = [];
             for(let col = 0; col < this.mapSizeInTiles.x ; col++)
             {   
                 let newNode = cc.instantiate(this.groundUnit);
                 this.node.addChild(newNode);
+                this.mapAsTilesUnit[row][col] = newNode;
                 let unitScript = newNode.getComponent(GroundPhysicsUnit);
                 unitScript.positionInGrid = new cc.Vec2(row, col);
                 unitScript.groundPhysicsOverLay = this;
@@ -86,6 +89,30 @@ export default class GroundPhysicsOverLay extends cc.Component {
         pos.x = this.offset.x + col * this.tileSize.x;
         pos.y = this.offset.y + -row * this.tileSize.y;
         return pos;
+    }
+
+    public getGridPosByWorldPosition(worldPosition : cc.Vec2)
+    {
+        let col = Math.ceil((worldPosition.x - this.offset.x) / this.tileSize.x);
+        let row = Math.ceil(-(worldPosition.y - this.offset.y)  /this.tileSize.y);
+        return new cc.Vec2(row, col);
+    }
+
+    public debugPath(path : cc.Vec2[], currentStep : number)
+    {
+        for (let index = 0; index < path.length; index++) {
+            const element = path[index];
+            if(index > currentStep)
+            {
+                this.mapAsTilesUnit[element.x][element.y].color = cc.Color.BLUE;
+                this.mapAsTilesUnit[element.x][element.y].opacity = 255;
+            }
+            else
+            {
+                this.mapAsTilesUnit[element.x][element.y].opacity = 0;
+            }
+            
+        }
     }
 
 }

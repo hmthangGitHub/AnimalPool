@@ -1,4 +1,6 @@
-import Global from "./Global";
+import State from "./State";
+import StateMachine from "../StateMachine";
+
 
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -13,17 +15,21 @@ import Global from "./Global";
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class Debugger extends cc.Component {
-    @property(cc.Boolean)
-    enablePhysicsDebugger : boolean  = false;
-    @property(cc.Boolean)
-    enableGroundPhysics : boolean = false;
-    @property(cc.Boolean)
-    enablePathDebug : boolean = false;
-    start()
+export default class Idle extends State {
+    
+    onLoad()
     {
-        Global.groundPhysicDebugger = this.enableGroundPhysics;
-        Global.physicDebugger = this.enablePhysicsDebugger;
-        Global.enablePathDebug = this.enablePathDebug;
+        super.onLoad();
+        this.stateName = "Idle";
     }
+
+    onEnable()
+    {
+        this.scheduleOnce(()=>{
+            this.changeToState("Moving");
+        }, 2)
+    }
+
+
+    // update (dt) {}
 }

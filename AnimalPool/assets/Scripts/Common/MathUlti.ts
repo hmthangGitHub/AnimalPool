@@ -19,4 +19,9 @@ export default class MathUlti {
         result.y = left.y * right.y;
         return result;
     }
+
+    static randomRange(from : number, to : number) : number
+    {
+        return Math.floor(Math.random() * to) + from;
+    }
 }

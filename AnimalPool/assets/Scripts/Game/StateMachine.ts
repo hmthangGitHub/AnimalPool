@@ -1,4 +1,5 @@
-import Global from "./Global";
+import State from "./CharacterState/State";
+import Logger from "../Common/Logger";
 
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -13,17 +14,25 @@ import Global from "./Global";
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class Debugger extends cc.Component {
-    @property(cc.Boolean)
-    enablePhysicsDebugger : boolean  = false;
-    @property(cc.Boolean)
-    enableGroundPhysics : boolean = false;
-    @property(cc.Boolean)
-    enablePathDebug : boolean = false;
+export default class StateMachine extends cc.Component {
+    
+    public states : State[] = [];
     start()
     {
-        Global.groundPhysicDebugger = this.enableGroundPhysics;
-        Global.physicDebugger = this.enablePhysicsDebugger;
-        Global.enablePathDebug = this.enablePathDebug;
+        this.states = this.getComponents(State);
+    }
+    changeState(fromState : string, toState :string )
+    {
+        let state = this.states.find((element)=>{
+            return element.stateName == toState;
+        });
+        if(state)
+        {
+            state.awakeState(fromState);
+        }
+        else
+        {
+            Logger.logError("StateMachine", "Could not change from " + fromState + " to state " + toState);
+        }
     }
 }

@@ -14,4 +14,5 @@ const {ccclass, property} = cc._decorator;
 export default class Global {
     static  physicDebugger : boolean = false;
     static groundPhysicDebugger : boolean = false;
+    static enablePathDebug : boolean = false;
 }

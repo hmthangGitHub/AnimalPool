@@ -19,8 +19,6 @@ export default class AstarPathFinding extends cc.Component {
     ground : GroundPhysicsOverLay  = null;
     public mapSizeInGrid : boolean[][];
     public nodeInGrid : NodeInGrid[][] = [];
-    private rootSquareOfTwo = Math.sqrt(2);
-
 
     onLoad()
     {
@@ -35,7 +33,7 @@ export default class AstarPathFinding extends cc.Component {
                 this.nodeInGrid[row] = [];
                 for (let col = 0; col < this.mapSizeInGrid[row].length; col++) {
                     // const isBlocked = this.mapSizeInGrid[row][col];
-                    this.nodeInGrid[row][col]= new NodeInGrid(row, col, false);
+                    this.nodeInGrid[row][col]= new NodeInGrid(row, col, true);
                 }
         }
     }
@@ -45,12 +43,13 @@ export default class AstarPathFinding extends cc.Component {
         this.mapSizeInGrid = this.ground.mapAsSimpleGrid;
         for (let row = 0; row < this.mapSizeInGrid.length; row++) {
             for (let col = 0; col < this.mapSizeInGrid[row].length; col++) {
-                const isBlocked = this.mapSizeInGrid[row][col];
+                const isMovable = this.mapSizeInGrid[row][col];
                 if(!this.nodeInGrid[row][col])
                 {
                     Logger.logError("AstarPathFinding", "Not found row , col " + row + " "+ col);
                 }
-                this.nodeInGrid[row][col].isBlocked = isBlocked;
+                this.nodeInGrid[row][col].isMovable = isMovable;
+                this.nodeInGrid[row][col].cameFrome = null;
             }
         }
     }
@@ -70,7 +69,7 @@ export default class AstarPathFinding extends cc.Component {
             if(bestOption.pos.equals(targetAsNode.pos))
             {
                 
-                targetAsNode.cameFrome = bestOption;
+                // targetAsNode.cameFrome = bestOption;
                 path = this.reconstructPath( targetAsNode);
                 break;
             }
@@ -98,7 +97,7 @@ export default class AstarPathFinding extends cc.Component {
         relatingPos.push(new cc.Vec2(1, 1));
         relatingPos.push(new cc.Vec2(1, 0));
         relatingPos.push(new cc.Vec2(1, -1));
-        relatingPos.push(new cc.Vec2(0, 1));
+        relatingPos.push(new cc.Vec2(0, -1));
 
         relatingPos.forEach(element => {
             this.addToOpenSetByRelatingPos(openSet, closedSet, currentNode, target, element);
@@ -118,14 +117,18 @@ export default class AstarPathFinding extends cc.Component {
 
     addToOpenSet(openSet : NodeInGrid[], closedSet : NodeInGrid[], nodePos : cc.Vec2, newG : number , currentNode : NodeInGrid, target : NodeInGrid)
     {
+        if(!this.nodeInGrid[nodePos.x][nodePos.y].isMovable)
+        {
+            return; // if it is blocked dont add to openlist
+        }
         let nodeInCloseSet = closedSet.find((element)=>{
-            element.pos.equals(nodePos);
+            return element.pos.equals(nodePos);
         });
         if(nodeInCloseSet)
             return; // if it in closeset dont do anything
 
         let nodeInOpenSet = openSet.find((element)=>{
-            element.pos.equals(nodePos);
+            return element.pos.equals(nodePos);
         });
         if(nodeInOpenSet)
         {
@@ -162,12 +165,12 @@ export default class AstarPathFinding extends cc.Component {
     {
         let path : cc.Vec2[] = [];
         
-        while(node.cameFrome !== null)
+        while(node.cameFrome != null)
         {
             path.push(node.pos);
             node = node.cameFrome;
         }
-        return path;
+        return path.reverse();
     }
 }
 
@@ -178,7 +181,7 @@ class NodeInGrid
         this.row = row;
         this.col = col;
         this.pos = new cc.Vec2(row, col);
-        this.isBlocked = isBlocked;
+        this.isMovable = isBlocked;
     }
     public pos : cc.Vec2;
     public row : number = 0;
@@ -187,7 +190,7 @@ class NodeInGrid
     public g : number = 0;
     public h : number = 0;
     public cameFrome : NodeInGrid = null;
-    public isBlocked : boolean = false;
+    public isMovable : boolean = false;
 
     getEvaluate()
     {

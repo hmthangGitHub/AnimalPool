@@ -1,4 +1,5 @@
-import Global from "./Global";
+import StateMachine from "../StateMachine";
+
 
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -10,20 +11,29 @@ import Global from "./Global";
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
-const {ccclass, property} = cc._decorator;
-
+const {ccclass, property, requireComponent} = cc._decorator;
 @ccclass
-export default class Debugger extends cc.Component {
-    @property(cc.Boolean)
-    enablePhysicsDebugger : boolean  = false;
-    @property(cc.Boolean)
-    enableGroundPhysics : boolean = false;
-    @property(cc.Boolean)
-    enablePathDebug : boolean = false;
-    start()
+@requireComponent(StateMachine)
+export default class State extends cc.Component {
+
+    public stateMachine : StateMachine = null;
+    public stateName : string = "";
+    onLoad()
     {
-        Global.groundPhysicDebugger = this.enableGroundPhysics;
-        Global.physicDebugger = this.enablePhysicsDebugger;
-        Global.enablePathDebug = this.enablePathDebug;
+        this.stateMachine = this.getComponent(StateMachine);
+    }
+    public sleep()
+    {
+        this.enabled = false;
+    }
+
+    public awakeState(fromeState : string)
+    {
+        this.enabled = true;
+    }
+    public changeToState(toState : string)
+    {
+        this.sleep();
+        this.stateMachine.changeState(this.stateName, toState);
     }
 }

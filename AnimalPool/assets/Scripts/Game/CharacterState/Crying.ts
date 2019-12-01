@@ -1,5 +1,3 @@
-import Global from "./Global";
-
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
@@ -13,17 +11,21 @@ import Global from "./Global";
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class Debugger extends cc.Component {
-    @property(cc.Boolean)
-    enablePhysicsDebugger : boolean  = false;
-    @property(cc.Boolean)
-    enableGroundPhysics : boolean = false;
-    @property(cc.Boolean)
-    enablePathDebug : boolean = false;
-    start()
-    {
-        Global.groundPhysicDebugger = this.enableGroundPhysics;
-        Global.physicDebugger = this.enablePhysicsDebugger;
-        Global.enablePathDebug = this.enablePathDebug;
+export default class NewClass extends cc.Component {
+
+    @property(cc.Label)
+    label: cc.Label = null;
+
+    @property
+    text: string = 'hello';
+
+    // LIFE-CYCLE CALLBACKS:
+
+    // onLoad () {}
+
+    start () {
+
     }
+
+    // update (dt) {}
 }
