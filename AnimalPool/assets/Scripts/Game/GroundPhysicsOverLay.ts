@@ -28,24 +28,23 @@ export default class GroundPhysicsOverLay extends cc.Component {
     public offset : cc.Vec2 = new cc.Vec2();
     public mapSizeInTiles : cc.Vec2 = new cc.Vec2();
 
-    public gridBlockMap : boolean[][] = [];
-    start () {
-
+    public mapAsSimpleGrid : boolean[][] = [];
+    onLoad()
+    {
         this.mapSizeInTiles = new cc.Vec2(Math.ceil(this.backgroundResolution.x / this.tileSize.x),Math.ceil(this.backgroundResolution.y / this.tileSize.y));
         this.offset = MathUlti.mulVector2(this.backgroundResolution, new cc.Vec2(-0.5, 0.5)).add(MathUlti.mulVector2(this.tileSize, new cc.Vec2(0.5, -0.5)));
         this.generateGrid();
         this.generateBlockMap();
-
     }
 
     generateBlockMap()
     {
         for(let row = 0; row < this.mapSizeInTiles.y; row++)
         {
-            this.gridBlockMap[row] = [];
+            this.mapAsSimpleGrid[row] = [];
             for(let col = 0; col < this.mapSizeInTiles.x ; col++)
             {   
-                this.gridBlockMap[row][col] = true;
+                this.mapAsSimpleGrid[row][col] = true;
             }
         }
     }
@@ -59,16 +58,21 @@ export default class GroundPhysicsOverLay extends cc.Component {
                 let newNode = cc.instantiate(this.groundUnit);
                 this.node.addChild(newNode);
                 let unitScript = newNode.getComponent(GroundPhysicsUnit);
-                unitScript.positionInGrid = new cc.Vec2(col, row);
+                unitScript.positionInGrid = new cc.Vec2(row, col);
                 unitScript.groundPhysicsOverLay = this;
-                newNode.setPosition(this.getWorldPositionByIndexes(col, row));
+                newNode.setPosition(this.getWorldPositionByIndexes(row, col));
             }
         }
     }
 
     public block(positionInGrid : cc.Vec2)
     {
-        this.gridBlockMap[positionInGrid.y][positionInGrid.x] = false; // row major
+        this.mapAsSimpleGrid[positionInGrid.x][positionInGrid.y] = false; // row major
+    }
+
+    public isBlocked(positionInGrid : cc.Vec2)
+    {
+        return this.mapAsSimpleGrid[positionInGrid.x][positionInGrid.y];
     }
 
     public getWorldPositionByGrid(positionInGrid : cc.Vec2) // x for col, y for row
@@ -76,20 +80,12 @@ export default class GroundPhysicsOverLay extends cc.Component {
         return this.getWorldPositionByIndexes(positionInGrid.x, positionInGrid.y);
     }
 
-    public getWorldPositionByIndexes(col, row) // x for col, y for row
+    public getWorldPositionByIndexes(row, col) // x for col, y for row
     {
         let pos : cc.Vec2 = new cc.Vec2();
         pos.x = this.offset.x + col * this.tileSize.x;
         pos.y = this.offset.y + -row * this.tileSize.y;
         return pos;
     }
-
-    
-
-
-
-
-
-
 
 }
