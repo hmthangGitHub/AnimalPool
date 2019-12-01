@@ -1,3 +1,5 @@
+import Global from "./Global";
+
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
@@ -11,17 +13,14 @@
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class EnablePhysicsDebugger extends cc.Component {
-
+export default class Debugger extends cc.Component {
     @property(cc.Boolean)
-    enable : boolean  = false;
-
-    onLoad () {
-        var manager = cc.director.getCollisionManager();
-        manager.enabled = true;
-        // manager.enabledDebugDraw = true;
-        // manager.enabledDrawBoundingBox = this.enable;
+    enablePhysicsDebugger : boolean  = false;
+    @property(cc.Boolean)
+    enableGroundPhysics : boolean = false;
+    start()
+    {
+        Global.groundPhysicDebugger = this.enableGroundPhysics;
+        Global.physicDebugger = this.enablePhysicsDebugger;
     }
-
-    // update (dt) {}
 }

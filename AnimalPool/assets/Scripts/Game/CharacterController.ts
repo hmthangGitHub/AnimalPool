@@ -11,17 +11,6 @@
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class EnablePhysicsDebugger extends cc.Component {
-
-    @property(cc.Boolean)
-    enable : boolean  = false;
-
-    onLoad () {
-        var manager = cc.director.getCollisionManager();
-        manager.enabled = true;
-        // manager.enabledDebugDraw = true;
-        // manager.enabledDrawBoundingBox = this.enable;
-    }
-
-    // update (dt) {}
+export default class CharacterController extends cc.Component {
+   
 }

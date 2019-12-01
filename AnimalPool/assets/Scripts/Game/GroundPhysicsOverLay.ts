@@ -1,4 +1,5 @@
 import MathUlti from "../Common/MathUlti";
+import GroundPhysicsUnit from "./GroundPhysicsUnit";
 
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -27,21 +28,65 @@ export default class GroundPhysicsOverLay extends cc.Component {
     public offset : cc.Vec2 = new cc.Vec2();
     public mapSizeInTiles : cc.Vec2 = new cc.Vec2();
 
-
+    public gridBlockMap : boolean[][] = [];
     start () {
+
         this.mapSizeInTiles = new cc.Vec2(Math.ceil(this.backgroundResolution.x / this.tileSize.x),Math.ceil(this.backgroundResolution.y / this.tileSize.y));
-        this.offset = this.backgroundResolution.mul(-0.5).add(MathUlti.mulVector2(this.tileSize, new cc.Vec2(0.5, -0.5)));
+        this.offset = MathUlti.mulVector2(this.backgroundResolution, new cc.Vec2(-0.5, 0.5)).add(MathUlti.mulVector2(this.tileSize, new cc.Vec2(0.5, -0.5)));
+        this.generateGrid();
+        this.generateBlockMap();
+
+    }
+
+    generateBlockMap()
+    {
+        for(let row = 0; row < this.mapSizeInTiles.y; row++)
+        {
+            this.gridBlockMap[row] = [];
+            for(let col = 0; col < this.mapSizeInTiles.x ; col++)
+            {   
+                this.gridBlockMap[row][col] = true;
+            }
+        }
+    }
+
+    generateGrid()
+    {
         for(let row = 0; row < this.mapSizeInTiles.y; row++)
         {
             for(let col = 0; col < this.mapSizeInTiles.x ; col++)
             {   
                 let newNode = cc.instantiate(this.groundUnit);
                 this.node.addChild(newNode);
-                newNode.x = this.offset.x + col * this.tileSize.x;
-                newNode.y = this.offset.y + row * this.tileSize.y;
+                let unitScript = newNode.getComponent(GroundPhysicsUnit);
+                unitScript.positionInGrid = new cc.Vec2(col, row);
+                unitScript.groundPhysicsOverLay = this;
+                newNode.setPosition(this.getWorldPositionByIndexes(col, row));
             }
         }
     }
+
+    public block(positionInGrid : cc.Vec2)
+    {
+        this.gridBlockMap[positionInGrid.y][positionInGrid.x] = false; // row major
+    }
+
+    public getWorldPositionByGrid(positionInGrid : cc.Vec2) // x for col, y for row
+    {
+        return this.getWorldPositionByIndexes(positionInGrid.x, positionInGrid.y);
+    }
+
+    public getWorldPositionByIndexes(col, row) // x for col, y for row
+    {
+        let pos : cc.Vec2 = new cc.Vec2();
+        pos.x = this.offset.x + col * this.tileSize.x;
+        pos.y = this.offset.y + -row * this.tileSize.y;
+        return pos;
+    }
+
+    
+
+
 
 
 

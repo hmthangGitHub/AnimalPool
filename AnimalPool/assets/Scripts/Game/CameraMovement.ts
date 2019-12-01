@@ -24,10 +24,11 @@ export default class CameraMovement extends cc.Component {
     @property([cc.Button])
     cameraButton : cc.Button[] = [];
 
-    currentCameraPosition : CameraPosition = CameraPosition.UP;
+    currentCameraPosition : CameraPosition;
     start()
     {
         this.init();
+        this.currentCameraPosition = CameraPosition.UP;
     }
     init()
     {

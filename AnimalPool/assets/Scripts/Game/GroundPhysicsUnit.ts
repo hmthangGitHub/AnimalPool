@@ -1,3 +1,6 @@
+import Global from "./Global";
+import GroundPhysicsOverLay from "./GroundPhysicsOverLay";
+
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
@@ -11,17 +14,22 @@
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class EnablePhysicsDebugger extends cc.Component {
+export default class GroundPhysicsUnit extends cc.Component {
 
-    @property(cc.Boolean)
-    enable : boolean  = false;
-
-    onLoad () {
-        var manager = cc.director.getCollisionManager();
-        manager.enabled = true;
-        // manager.enabledDebugDraw = true;
-        // manager.enabledDrawBoundingBox = this.enable;
+    public groundPhysicsOverLay : GroundPhysicsOverLay;
+    public positionInGrid : cc.Vec2 = new cc.Vec2();
+    onCollisionEnter(other)
+    {
+        if(Global.groundPhysicDebugger)
+        {
+            this.node.color = cc.Color.RED;
+            this.node.opacity = 255;
+        }
+        this.groundPhysicsOverLay.block(this.positionInGrid);
     }
 
-    // update (dt) {}
+
+
+
+    
 }
