@@ -1,6 +1,12 @@
 import State from "./State";
-import StateMachine from "../StateMachine";
-
+import AstarPathFinding from "../AstarPathFinding";
+import Global from "../Global";
+import GroundPhysicsOverLay from "../GroundPhysicsOverLay";
+import Logger from "../../Common/Logger";
+import MathUlti from "../../Common/MathUlti";
+import LayOuts from "../LayOut";
+import { CameraPosition } from "../CameraMovement";
+import Item from "../Item";
 
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -15,20 +21,25 @@ import StateMachine from "../StateMachine";
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class Idle extends State {
-    
-    onLoad()
-    {
-        super.onLoad();
-    }
+export default class Ordering extends State {
 
+    @property(cc.Node)
+    bubbleTalk : cc.Node = null;
+    @property(cc.Float)
+    waitingTime : number = 5.0;
+    public currentHoldingItem : Item = null;
     onEnable()
     {
+        this.bubbleTalk.active = true;
         this.scheduleOnce(()=>{
-            this.changeToState("Moving");
-        }, 2)
+            this.changeToState("Idle");
+            this.bubbleTalk.active = false;
+        }, this.waitingTime);
+
     }
 
+    update(dt)
+    {
 
-    // update (dt) {}
+    }
 }

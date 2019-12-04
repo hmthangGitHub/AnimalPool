@@ -21,7 +21,14 @@ export default class State extends cc.Component {
     onLoad()
     {
         this.stateMachine = this.getComponent(StateMachine);
+        this.setName();
     }
+
+    public setName()
+    {
+        this.stateName = this.constructor.name;
+    }
+
     public sleep()
     {
         this.enabled = false;
@@ -30,10 +37,18 @@ export default class State extends cc.Component {
     public awakeState(fromeState : string)
     {
         this.enabled = true;
+        this.onAwaken();
+    }
+
+    public onAwaken()
+    {
+        
     }
     public changeToState(toState : string)
     {
         this.sleep();
         this.stateMachine.changeState(this.stateName, toState);
     }
+
+
 }

@@ -1,5 +1,9 @@
 import MathUlti from "../Common/MathUlti";
 import GroundPhysicsUnit from "./GroundPhysicsUnit";
+import InteractSpot from "./InteractSpot";
+import Item from "./Item";
+import { CameraPosition } from "./CameraMovement";
+import LayOuts from "./LayOut";
 
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -24,14 +28,18 @@ export default class GroundPhysicsOverLay extends cc.Component {
     tileSize : cc.Vec2 = new cc.Vec2();
     @property(cc.Prefab)
     groundUnit : cc.Prefab = null;
-
+    @property(LayOuts)
+    cameraLayOuts : LayOuts = null;
     public offset : cc.Vec2 = new cc.Vec2();
     public mapSizeInTiles : cc.Vec2 = new cc.Vec2();
     public mapAsSimpleGrid : boolean[][] = [];
     public mapAsTilesUnit : cc.Node[][] = [];
 
+    public itemsMap : Map<string, Item[]>;
+
     onLoad()
     {
+        this.itemsMap = new Map<string, cc.Node[]>();
         this.mapSizeInTiles = new cc.Vec2(Math.ceil(this.backgroundResolution.x / this.tileSize.x),Math.ceil(this.backgroundResolution.y / this.tileSize.y));
         this.offset = MathUlti.mulVector2(this.backgroundResolution, new cc.Vec2(-0.5, 0.5)).add(MathUlti.mulVector2(this.tileSize, new cc.Vec2(0.5, -0.5)));
         this.generateGrid();
@@ -75,7 +83,7 @@ export default class GroundPhysicsOverLay extends cc.Component {
 
     public isBlocked(positionInGrid : cc.Vec2)
     {
-        return this.mapAsSimpleGrid[positionInGrid.x][positionInGrid.y];
+        return !this.mapAsSimpleGrid[positionInGrid.x][positionInGrid.y];
     }
 
     public getWorldPositionByGrid(positionInGrid : cc.Vec2) // x for col, y for row
@@ -93,8 +101,8 @@ export default class GroundPhysicsOverLay extends cc.Component {
 
     public getGridPosByWorldPosition(worldPosition : cc.Vec2)
     {
-        let col = Math.ceil((worldPosition.x - this.offset.x) / this.tileSize.x);
-        let row = Math.ceil(-(worldPosition.y - this.offset.y)  /this.tileSize.y);
+        let col = Math.floor((worldPosition.x - this.offset.x) / this.tileSize.x);
+        let row = Math.floor(-(worldPosition.y - this.offset.y)  /this.tileSize.y);
         return new cc.Vec2(row, col);
     }
 
@@ -113,6 +121,49 @@ export default class GroundPhysicsOverLay extends cc.Component {
             }
             
         }
+    }
+
+    public addItemToMap(itemName : string, item : Item)
+    {
+        if(this.itemsMap.has(itemName))
+        {
+            let itemInArray = this.itemsMap.get(itemName).find((element)=>{
+                return element === item;
+            });
+            if(!itemInArray)
+            {
+                this.itemsMap.get(itemName).push(item);
+            }
+        }
+        else
+        {
+            let newItemArray = [];
+            newItemArray.push(item);
+            this.itemsMap.set(itemName, newItemArray);
+        }
+    }
+
+    public getAvailablePlaces(itemName : string)
+    {
+        if(!this.itemsMap.has(itemName))
+            return;
+        let items = this.itemsMap.get(itemName);
+        let available = items.find((item)=>{
+            return item.isAvailable();
+        });
+        return available;
+    }
+
+    public getRandomPointInCameraLayout(campos : CameraPosition) : cc.Vec2
+    {
+        let midLayout = this.cameraLayOuts.getBoundingBoxInMapSpace(campos);
+        let lowestPoint = new cc.Vec2(midLayout.xMin , midLayout.yMin );
+        let highestPoint = new cc.Vec2(midLayout.xMax, midLayout.yMax);
+        let lowestPointInGrid = this.getGridPosByWorldPosition(lowestPoint);
+        lowestPointInGrid = lowestPointInGrid.add(new cc.Vec2(-1, 1));
+        let highestPointInGrid = this.getGridPosByWorldPosition(highestPoint);
+        highestPointInGrid = highestPointInGrid.add(new cc.Vec2(1, -1));
+        return new cc.Vec2(MathUlti.randomRange(highestPointInGrid.x, lowestPointInGrid.x),MathUlti.randomRange(lowestPointInGrid.y, highestPointInGrid.y));
     }
 
 }

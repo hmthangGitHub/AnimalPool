@@ -31,7 +31,7 @@
     "3D",
     "3D Primitive"
   ],
-  "last-module-event-record-time": 0,
+  "last-module-event-record-time": 1575236307760,
   "design-resolution-width": 960,
   "design-resolution-height": 640,
   "fit-width": false,
@@ -53,5 +53,6 @@
     "live": {
       "enable": false
     }
-  }
+  },
+  "start-scene": "current"
 }

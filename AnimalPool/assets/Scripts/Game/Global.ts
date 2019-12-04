@@ -10,9 +10,23 @@
 
 const {ccclass, property} = cc._decorator;
 
+class GameConfigs
+{
+
+    designedResolution : cc.Vec2 = new cc.Vec2();
+
+    backgroundResolution : cc.Vec2 = new cc.Vec2();
+
+    tileSize : cc.Vec2 = new cc.Vec2();
+};
+
 @ccclass
 export default class Global {
     static  physicDebugger : boolean = false;
     static groundPhysicDebugger : boolean = false;
     static enablePathDebug : boolean = false;
+    static gameConfig : GameConfigs = new GameConfigs();
+    
 }
+
+

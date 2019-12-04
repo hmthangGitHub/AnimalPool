@@ -21,7 +21,7 @@ export default class StateMachine extends cc.Component {
     {
         this.states = this.getComponents(State);
     }
-    changeState(fromState : string, toState :string )
+    changeState(fromState : string, toState :string)
     {
         let state = this.states.find((element)=>{
             return element.stateName == toState;

@@ -1,3 +1,5 @@
+import Global from "./Global";
+
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
@@ -11,17 +13,21 @@
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class MathUlti {
-    static mulVector2(left : cc.Vec2, right : cc.Vec2)
+export default class GameConfigs extends cc.Component {
+
+    @property(cc.Vec2)
+    designedResolution : cc.Vec2 = new cc.Vec2();
+    @property(cc.Vec2)
+    backgroundResolution : cc.Vec2 = new cc.Vec2();
+    @property(cc.Vec2)
+    tileSize : cc.Vec2 = new cc.Vec2();
+
+    onLoad()
     {
-        let result : cc.Vec2 = new cc.Vec2();
-        result.x = left.x * right.x;
-        result.y = left.y * right.y;
-        return result;
+        Global.gameConfig.designedResolution = this.designedResolution;
+        Global.gameConfig.backgroundResolution = this.backgroundResolution;
+        Global.gameConfig.tileSize = this.tileSize;
     }
 
-    static randomRange(from : number, to : number) : number
-    {
-        return Math.floor(Math.random() * (to - from + 1)) + from;
-    }
+    // update (dt) {}
 }

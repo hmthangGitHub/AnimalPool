@@ -1,4 +1,6 @@
 import MathUlti from "../Common/MathUlti";
+import Global from "./Global";
+import GameConfigs from "./GameConfigs";
 
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -18,26 +20,38 @@ export default class CameraMovement extends cc.Component {
     cameraPosition : cc.Vec2[] = [];
     @property(cc.Float)
     duration : number = 0.5;
-    @property(cc.Vec2)
     screenSize : cc.Vec2 = new cc.Vec2();
 
     @property([cc.Button])
     cameraButton : cc.Button[] = [];
 
+    originalPosition : cc.Vec2 = new cc.Vec2();
+
     currentCameraPosition : CameraPosition;
+
+    boundingBoxesInMapSpace : cc.Rect[] = [];
+
+
+    
     start()
     {
-        this.init();
-        this.currentCameraPosition = CameraPosition.UP;
+        this.initCamPos();
+        
     }
-    init()
+    
+    initCamPos()
     {
+        
+        this.originalPosition = this.node.position;
+        this.screenSize = Global.gameConfig.designedResolution;
+        this.currentCameraPosition = CameraPosition.UP;
         let offset = this.screenSize;
         this.cameraPosition[CameraPosition.UP] = this.node.position;
         this.cameraPosition[CameraPosition.LEFT] = this.node.position.add(MathUlti.mulVector2(offset, new cc.Vec2(-1, 0)));
         this.cameraPosition[CameraPosition.RIGHT] = this.node.position.add(MathUlti.mulVector2(offset, new cc.Vec2(1, 0)));
         this.cameraPosition[CameraPosition.DOWN] = this.node.position.add(MathUlti.mulVector2(offset, new cc.Vec2(0, -1)));
     }
+
     moveto( target , direction : string)
     {
         let mulVector = new cc.Vec2();
@@ -107,6 +121,15 @@ export default class CameraMovement extends cc.Component {
             button.node.active = false;
         });
     }
+
+    getCameraVisibleAreaInWorld()
+    {
+        let boundingBox = new cc.Rect();
+        boundingBox.size = cc.winSize;
+        boundingBox.center = this.node.position;
+        return boundingBox;
+    }
+    
 }
 
 export enum CameraPosition {
@@ -114,5 +137,4 @@ export enum CameraPosition {
     DOWN,
     LEFT,
     RIGHT
-    
 }

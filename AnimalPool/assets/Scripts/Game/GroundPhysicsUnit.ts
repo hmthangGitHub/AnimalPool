@@ -1,5 +1,6 @@
 import Global from "./Global";
 import GroundPhysicsOverLay from "./GroundPhysicsOverLay";
+import Item from "./Item";
 
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -20,12 +21,18 @@ export default class GroundPhysicsUnit extends cc.Component {
     public positionInGrid : cc.Vec2 = new cc.Vec2();
     onCollisionEnter(other)
     {
-        if(Global.groundPhysicDebugger)
+        if(other.node.group == "Items")
         {
-            this.node.color = cc.Color.RED;
-            this.node.opacity = 255;
+            if(Global.groundPhysicDebugger)
+            {
+                this.node.color = cc.Color.RED;
+                this.node.opacity = 255;
+            }
+            this.groundPhysicsOverLay.block(this.positionInGrid);
         }
-        this.groundPhysicsOverLay.block(this.positionInGrid);
+        // add item to map to continue the work bois
+        let item : Item = other.node.getComponent(Item);
+        this.groundPhysicsOverLay.addItemToMap(item.itemName, item);
     }
 
 

@@ -11,17 +11,6 @@
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class MathUlti {
-    static mulVector2(left : cc.Vec2, right : cc.Vec2)
-    {
-        let result : cc.Vec2 = new cc.Vec2();
-        result.x = left.x * right.x;
-        result.y = left.y * right.y;
-        return result;
-    }
-
-    static randomRange(from : number, to : number) : number
-    {
-        return Math.floor(Math.random() * (to - from + 1)) + from;
-    }
+export default class CocosUlti extends cc.Component {
+    
 }
