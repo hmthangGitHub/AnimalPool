@@ -4,7 +4,7 @@ import AstarPathFinding from "./AstarPathFinding";
 import LayOuts from "./LayOut";
 import Moving from "./CharacterState/Moving";
 import Logger from "../Common/Logger";
-import Item from "./Item";
+import Item, { Direction } from "./Item";
 import Global from "./Global";
 import MathUlti from "../Common/MathUlti";
 import Ordering from "./CharacterState/Ordering";
@@ -23,8 +23,6 @@ const {ccclass, property} = cc._decorator;
 
 @ccclass
 export default class Eating extends Moving {
-
-
     onLoad()
     {
         super.onLoad();
@@ -36,6 +34,7 @@ export default class Eating extends Moving {
         let availableTable : Item = this.ground.getAvailablePlaces("table");
         if(availableTable)
         {
+            let holdingIndex = availableTable.getAvailableIndex();
             let target : cc.Vec2 = availableTable.getInteractSpotInMapSpace();
             let targetAsGridPos = this.ground.getGridPosByWorldPosition(target);
             if(this.ground.isBlocked(targetAsGridPos))
@@ -46,11 +45,29 @@ export default class Eating extends Moving {
                     let randomFactor = MathUlti.randomRange(0 , 1);
                     if(randomFactor > 0)
                     {
-                        targetAsGridPos = targetAsGridPos.add(new cc.Vec2(0, 1));
+                        let variationVector = new cc.Vec2(0, 1);
+                        switch(availableTable.direction)
+                        {
+                            case Direction.UP:
+                            case Direction.DOWN:
+                            {
+                                variationVector = new cc.Vec2(0, 1);
+                                break;
+                            };
+                            case Direction.LEFT:
+                            case Direction.RIGHT:
+                            {
+                                variationVector = new cc.Vec2(1, 0);
+                                break;
+                            };
+                        }
+                        
+                        targetAsGridPos = targetAsGridPos.add(variationVector);
                     }
                 }
                 while(this.ground.isBlocked(targetAsGridPos));
             }
+            availableTable.holdSpot(holdingIndex);
             this.moveTo(targetAsGridPos, ()=>{
                 let moveTween = new cc.Tween();
                 moveTween.target(this.node);
@@ -59,14 +76,17 @@ export default class Eating extends Moving {
                     this.scheduleOnce(()=>{
                         this.changeToState("Ordering");
                         this.getComponent(Ordering).currentHoldingItem = availableTable;
+                        this.getComponent(Ordering).holdingIndex = holdingIndex;
                     }, 0.5);
                 });
+                
                 moveTween.start();
             });
         }
         else
         {
-            Logger.logError("Eating", "Not Found any available places " + "table");
+            // Logger.logError("Eating", "Not Found any available places " + "table");
+            this.changeToState("Idle");
         }
     }
     update (dt)

@@ -57,16 +57,12 @@ export default class Item extends cc.Component {
         return mapSpace;
     }
 
-    isAvailable()
+    getAvailableIndex() : number
     {
         let index = this.availableSpot.findIndex((element) => {
             return element;
         });
-        if(index < 0)
-        {
-            return false;
-        }
-        return true;
+        return index;
     }
 
     getDirectionAsVector() : cc.Vec2
@@ -95,13 +91,13 @@ export default class Item extends cc.Component {
         }
     }
 
-    holdSpot()
+    holdSpot(index : number )
     {
-
+        this.availableSpot[index] = false;
     }
 
-    releaseSpot()
+    releaseSpot(index : number)
     {
-        
+        this.availableSpot[index] = true;
     }
 }

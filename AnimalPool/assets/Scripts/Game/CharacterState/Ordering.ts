@@ -28,6 +28,7 @@ export default class Ordering extends State {
     @property(cc.Float)
     waitingTime : number = 5.0;
     public currentHoldingItem : Item = null;
+    public holdingIndex : number = null;
     onEnable()
     {
         this.bubbleTalk.active = true;
@@ -35,7 +36,11 @@ export default class Ordering extends State {
             this.changeToState("Idle");
             this.bubbleTalk.active = false;
         }, this.waitingTime);
+    }
 
+    onDisable()
+    {
+        this.currentHoldingItem.releaseSpot(this.holdingIndex);
     }
 
     update(dt)

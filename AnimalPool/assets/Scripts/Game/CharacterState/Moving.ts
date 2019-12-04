@@ -72,7 +72,7 @@ export default class Moving extends State {
                     
                     if(this.currentPathIndex >= this.currentPath.length -  1)
                     {
-                        Logger.log("Moving", "Reached the target!!");
+                        // Logger.log("Moving", "Reached the target!!");
                         // this.scheduleOnce(()=>{
                         //     this.changeToState("Eating");
                         // }, 1.0);

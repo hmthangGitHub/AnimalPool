@@ -149,7 +149,7 @@ export default class GroundPhysicsOverLay extends cc.Component {
             return;
         let items = this.itemsMap.get(itemName);
         let available = items.find((item)=>{
-            return item.isAvailable();
+            return item.getAvailableIndex() >= 0;
         });
         return available;
     }
