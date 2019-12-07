@@ -1,5 +1,3 @@
-import GameProgress from "./GameProgress";
-
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
@@ -12,23 +10,7 @@ import GameProgress from "./GameProgress";
 
 const {ccclass, property} = cc._decorator;
 
-class GameConfigs
-{
-
-    designedResolution : cc.Vec2 = new cc.Vec2();
-
-    backgroundResolution : cc.Vec2 = new cc.Vec2();
-
-    tileSize : cc.Vec2 = new cc.Vec2();
-};
-
 @ccclass
-export default class Global {
-    static  physicDebugger : boolean = false;
-    static groundPhysicDebugger : boolean = false;
-    static enablePathDebug : boolean = false;
-    static gameConfig : GameConfigs = new GameConfigs();
-    static gameProgress : GameProgress = new GameProgress();
+export default class UnlockCondition extends cc.Component {
+    
 }
-
-

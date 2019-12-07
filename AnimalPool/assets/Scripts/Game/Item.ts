@@ -27,8 +27,11 @@ export default class Item extends cc.Component {
     
     availableSpot : boolean[] = [];
 
+    map : cc.Node = null;
+    
     onLoad()
     {
+        this.map = cc.find("Canvas/Map");
         for (let index = 0; index < this.interactSpotContainer.childrenCount; index++) {
             this.availableSpot[index] = true;
         }
@@ -43,7 +46,7 @@ export default class Item extends cc.Component {
             return null;
         let interactSpot = this.interactSpotContainer.children[index];
         let worldSpacePos :cc.Vec2 = interactSpot.parent.convertToWorldSpaceAR(interactSpot.position);
-        let mapSpace = this.node.parent.convertToNodeSpaceAR(worldSpacePos);
+        let mapSpace = this.map.convertToNodeSpaceAR(worldSpacePos);
         return mapSpace;
     }
 
@@ -53,7 +56,7 @@ export default class Item extends cc.Component {
         if(interactSpot)
             return null;
         let worldSpacePos :cc.Vec2 = interactSpot.parent.convertToWorldSpaceAR(interactSpot.position);
-        let mapSpace = this.node.parent.convertToWorldSpaceAR(worldSpacePos);
+        let mapSpace = this.map.convertToWorldSpaceAR(worldSpacePos);
         return mapSpace;
     }
 

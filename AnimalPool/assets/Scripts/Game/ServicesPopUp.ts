@@ -1,4 +1,4 @@
-import GameProgress from "./GameProgress";
+import Logger from "../Common/Logger";
 
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
@@ -12,23 +12,33 @@ import GameProgress from "./GameProgress";
 
 const {ccclass, property} = cc._decorator;
 
-class GameConfigs
-{
-
-    designedResolution : cc.Vec2 = new cc.Vec2();
-
-    backgroundResolution : cc.Vec2 = new cc.Vec2();
-
-    tileSize : cc.Vec2 = new cc.Vec2();
-};
-
 @ccclass
-export default class Global {
-    static  physicDebugger : boolean = false;
-    static groundPhysicDebugger : boolean = false;
-    static enablePathDebug : boolean = false;
-    static gameConfig : GameConfigs = new GameConfigs();
-    static gameProgress : GameProgress = new GameProgress();
+export default class ServicesPopUp extends cc.Component {
+
+    @property(cc.Node)
+    contentContainer : cc.Node = null;
+   show()
+   {
+       this.node.active = true;
+   }
+   hide()
+   {
+       this.node.active = false;
+   }
+
+   public checkEvent(target, customEvent)
+   {
+
+        this.contentContainer.children.forEach(content => {
+            if(content.name === target.node.name)
+            {
+                content.active = true;
+            }
+            else
+            {
+                content.active = false;
+            }
+        });
+        
+   }
 }
-
-
