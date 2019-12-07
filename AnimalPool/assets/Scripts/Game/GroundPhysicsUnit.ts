@@ -29,10 +29,12 @@ export default class GroundPhysicsUnit extends cc.Component {
                 this.node.opacity = 255;
             }
             this.groundPhysicsOverLay.block(this.positionInGrid);
+
+            // add item to map to continue the work bois
+            let item : Item = other.node.getComponent(Item);
+            this.groundPhysicsOverLay.addItemToMap(item.itemName, item);
         }
-        // add item to map to continue the work bois
-        let item : Item = other.node.getComponent(Item);
-        this.groundPhysicsOverLay.addItemToMap(item.itemName, item);
+
     }
 
 

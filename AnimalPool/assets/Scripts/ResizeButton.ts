@@ -11,25 +11,14 @@
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class GameProgress {
-    public currentMoney : number = 5000;
-    public currentStar : number = 500;
-    public currentTipRate : number = 5.0;
-    public currentUnlockedItem : Map<string, number> = new Map<string, number>();
-    public unlockItem(id : string, level : number)
+export default class ResizeButton extends cc.Component {
+    @property(cc.Node)
+    label : cc.Node = null;
+    @property(cc.Vec2)
+    padding : cc.Vec2 = new cc.Vec2();
+    update(dt)
     {
-        this.currentUnlockedItem.set(id, level);
-    }
-    getCurrentLevelUnlockItem(id : string)
-    {
-        if(this.currentUnlockedItem.has(id))
-        {
-            return this.currentUnlockedItem.get(id);
-        }
-        else
-        {
-            return -1;
-        }
+        this.node.width = this.label.width + this.padding.x * 2;
+        this.node.height = this.label.height + this.padding.y * 2;
     }
 }
-

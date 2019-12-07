@@ -1,3 +1,5 @@
+import Global from "./Global";
+
 // Learn TypeScript:
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/typescript.html
 //  - [English] http://www.cocos2d-x.org/docs/creator/manual/en/scripting/typescript.html
@@ -11,25 +13,23 @@
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class GameProgress {
-    public currentMoney : number = 5000;
-    public currentStar : number = 500;
-    public currentTipRate : number = 5.0;
-    public currentUnlockedItem : Map<string, number> = new Map<string, number>();
-    public unlockItem(id : string, level : number)
-    {
-        this.currentUnlockedItem.set(id, level);
+export default class NewClass extends cc.Component {
+
+    @property(cc.Label)
+    money: cc.Label = null;
+
+    @property(cc.Label)
+    star: cc.Label = null;
+
+    
+
+
+    start () {
+
     }
-    getCurrentLevelUnlockItem(id : string)
-    {
-        if(this.currentUnlockedItem.has(id))
-        {
-            return this.currentUnlockedItem.get(id);
-        }
-        else
-        {
-            return -1;
-        }
+
+    update (dt) {
+        this.money.string = Global.gameProgress.currentMoney.toString();
+        this.star.string = Global.gameProgress.currentStar.toString();
     }
 }
-

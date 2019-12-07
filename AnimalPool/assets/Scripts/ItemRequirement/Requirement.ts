@@ -11,25 +11,9 @@
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class GameProgress {
-    public currentMoney : number = 5000;
-    public currentStar : number = 500;
-    public currentTipRate : number = 5.0;
-    public currentUnlockedItem : Map<string, number> = new Map<string, number>();
-    public unlockItem(id : string, level : number)
+export default class Requirement extends cc.Component {
+    validate() : boolean
     {
-        this.currentUnlockedItem.set(id, level);
-    }
-    getCurrentLevelUnlockItem(id : string)
-    {
-        if(this.currentUnlockedItem.has(id))
-        {
-            return this.currentUnlockedItem.get(id);
-        }
-        else
-        {
-            return -1;
-        }
+        return false;
     }
 }
-
